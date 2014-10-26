@@ -22,14 +22,11 @@ public class Main {
         // Part - 1 Tokenizing
         Tokenizer myTokenizer = new Tokenizer(cranfield_path);
         myTokenizer.tokenize();
-        //myTokenizer.printComplexDictionary();
-        //myTokenizer.printTermFrequency();
         myDictionary = myTokenizer.getComplexDictionary();
         tokenizedTermFrequency = myTokenizer.getTermFrequency();
 
         // Part - 2 Stemming
         s = new Stemmer(myTokenizer.getFileCount());
-
         for(Map.Entry<Integer, TreeMap<String, Integer>> e : myDictionary.entrySet()) {
             int docId = e.getKey();
             TreeMap<String, Integer> currentDict = e.getValue();
@@ -69,35 +66,22 @@ public class Main {
                 if(stemmedTermFrequency.containsKey(stemmedToken)){
                     TreeSet<Integer> termFrequency = stemmedTermFrequency.get(stemmedToken);
                     // merge this set of TF's with another token's TF that has the same stemmed token
-                    TreeSet<Integer> anotherTermFrequency = tokenizedTermFrequency.get(token);
+                    TreeSet<Integer> anotherTermFrequency = new TreeSet<Integer>();
+                    anotherTermFrequency.addAll(tokenizedTermFrequency.get(token));
                     termFrequency.addAll(anotherTermFrequency);
                     stemmedTermFrequency.put(stemmedToken, termFrequency);
                 } else {
-                    stemmedTermFrequency.put(stemmedToken, tokenizedTermFrequency.get(token));
+                    TreeSet<Integer> anotherTermFrequency = new TreeSet<Integer>();
+                    anotherTermFrequency.addAll(tokenizedTermFrequency.get(token));
+                    stemmedTermFrequency.put(stemmedToken, anotherTermFrequency);
                 }
             }
-        }
-
-        System.out.println("Stemmed Dictionary");
-        for(Map.Entry<Integer, TreeMap<String, Integer>> e : myStemmedDictionary.entrySet()) {
-            System.out.println("Doc Id = " + e.getKey());
-            System.out.println("========================");
-            TreeMap<String, Integer> currentDict = e.getValue();
-            for(Map.Entry<String, Integer> f: currentDict.entrySet()) {
-                System.out.println(f.getKey() + " -> " + f.getValue());
-            }
-            System.out.println("========================");
-        }
-
-        System.out.println("Stemmed Term Frequency");
-        for(Map.Entry<String, TreeSet<Integer>> s : stemmedTermFrequency.entrySet()) {
-            System.out.println(s.getKey()+", "+s.getValue().toString());
         }
 
         IndexBuilder myIndexBuilder = new IndexBuilder();
 
         // Build Uncompressed Index Version One
-        myIndexBuilder.buildUncompressedIndexVersionOne();
+        myIndexBuilder.buildUncompressedIndexVersionOne(myDictionary, tokenizedTermFrequency);
 
         // Build Uncompressed Index Version Two
         myIndexBuilder.buildUncompressedIndexVersionTwo(myStemmedDictionary, stemmedTermFrequency);
@@ -106,24 +90,6 @@ public class Main {
 
         // Build Compressed Index Version Two
 
-        // Part - 2 Stemming
-        /*Stemmer s = new Stemmer(myTokenizer.getFileCount());
-
-        for(Map.Entry<String, Integer> e: myDictionary.entrySet()) {
-            String currentString = e.getKey();
-            int currentCount = e.getValue();
-            int stringLength = currentString.length();
-            char[] w =  currentString.toCharArray();
-            for(int i = 0; i < stringLength; i++) {
-                s.add(w[i]);
-            }
-            s.stem();
-            String u;
-            u = s.toString();
-            s.addStemToDictionary(u, currentCount);
-        }
-        s.getStats();
-        final long endTime = System.currentTimeMillis();*/
     }
 
     private static String stemThisToken(String token) {

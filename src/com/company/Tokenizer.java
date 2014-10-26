@@ -102,9 +102,7 @@ public class Tokenizer {
                     maxEntry = entry;
                 }
             }
-
             mostFrequentTermInADocument.add(maxEntry.getKey());
-
             complexDictionary.put(i, docDictionary); // add doc dictionary to complex dictionary
             docLength.add(documentTokenCount); // keeps track of document length
         }
@@ -152,5 +150,4 @@ public class Tokenizer {
             System.out.println(s.getKey() + "->" + s.getValue().toString());
         }
     }
-
 }
