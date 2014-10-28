@@ -79,17 +79,58 @@ public class Main {
         }
 
         IndexBuilder myIndexBuilder = new IndexBuilder();
-
         // Build Uncompressed Index Version One
-        myIndexBuilder.buildUncompressedIndexVersionOne(myDictionary, tokenizedTermFrequency);
+        final long startTimeIndex1 = System.currentTimeMillis();
+        int uncompSize1 = myIndexBuilder.buildUncompressedIndexVersionOne(myDictionary, tokenizedTermFrequency);
+        final long endTimeIndex1 = System.currentTimeMillis();
+
 
         // Build Uncompressed Index Version Two
-        myIndexBuilder.buildUncompressedIndexVersionTwo(myStemmedDictionary, stemmedTermFrequency);
+        final long startTimeIndex2 = System.currentTimeMillis();
+        int uncompSize2 = myIndexBuilder.buildUncompressedIndexVersionTwo(myStemmedDictionary, stemmedTermFrequency);
+        final long endTimeIndex2 = System.currentTimeMillis();
 
         // Build Compressed Index Version One
+        final long startTimeIndex3 = System.currentTimeMillis();
+        int compSize1 = myIndexBuilder.builCompressedIndexVersionOne("Compressed_Ver_1");
+        final long endTimeIndex3 = System.currentTimeMillis();
 
         // Build Compressed Index Version Two
+        final long startTimeIndex4 = System.currentTimeMillis();
+        int compSize2 = myIndexBuilder.buildCompressedIndexVersionTwo(myStemmedDictionary, stemmedTermFrequency, new String("Compressed_Ver_2"));
+        final long endTimeIndex4 = System.currentTimeMillis();
 
+        ArrayList<Integer> indexListSize = myIndexBuilder.getInvertedListCount();
+
+        System.out.println("Size of Index                    Time Taken to build                Number of Inverted Lists");
+        System.out.println("Uncompressed Index one = " + uncompSize1 + "  " + (endTimeIndex1 - startTimeIndex1) + " ms" + "\t" + indexListSize.get(0));
+        System.out.println("Uncompressed Index two = " + uncompSize2 + "  " + (endTimeIndex2 - startTimeIndex2)+ " ms" + "\t" + indexListSize.get(1));
+        System.out.println("Compressed Index one =   " + compSize1 + "  " + (endTimeIndex3 - startTimeIndex3) + " ms" + "\t" + indexListSize.get(0));
+        System.out.println("Compressed Index two =   " + compSize2 + "  " + (endTimeIndex4 - startTimeIndex4) + " ms" + "\t" + indexListSize.get(1));
+
+
+        ArrayList<String> myWords = new ArrayList<String>();
+        myWords.add("reynold");
+        myWords.add("nasa");
+        myWords.add("prandtl");
+        myWords.add("flow");
+        myWords.add("pressur");
+        myWords.add("boundari");
+        myWords.add("shock");
+
+        System.out.println("Term       DF       TF      Inverted List for Uncompressed (in bytes)");
+        System.out.println("=====================================================================");
+        for(String current : myWords) {
+            int termfreq = 0;
+            int docfreq = stemmedTermFrequency.get(current).size();
+            for(int docId : stemmedTermFrequency.get(current)) {
+                if(myStemmedDictionary.get(docId).get(current) == null) {
+                    System.out.println("Null here !!!");
+                }
+                termfreq = termfreq + myStemmedDictionary.get(docId).get(current);
+            }
+            System.out.println(current + "  " + docfreq + "  " + termfreq + "  " + 2 * stemmedTermFrequency.get(current).size()*(Integer.SIZE/Byte.SIZE));
+        }
     }
 
     private static String stemThisToken(String token) {

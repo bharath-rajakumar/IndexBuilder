@@ -16,7 +16,7 @@ public class Lemma {
 
     public Lemma() {
         this.props = new Properties();
-        this.props.put("annotators", "tokenize, ssplit, pos, lemma, ner, parse, dcoref");
+        this.props.put("annotators", "tokenize, ssplit, pos, lemma");
         this.pipeline = new StanfordCoreNLP();
     }
 
