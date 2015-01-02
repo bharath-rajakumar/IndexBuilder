@@ -16,8 +16,8 @@ public class Main {
         Scanner in = new Scanner(System.in);
 
         // Get the path of Cranfield folder from the user
-        System.out.println("Enter the complete path of the Cranfield documents directory");
-        cranfield_path = in.next();
+        // System.out.println("Enter the complete path of the Cranfield documents directory");
+        cranfield_path = args[1];
 
         // Part - 1 Tokenizing
         Tokenizer myTokenizer = new Tokenizer(cranfield_path);
@@ -102,11 +102,11 @@ public class Main {
 
         ArrayList<Integer> indexListSize = myIndexBuilder.getInvertedListCount();
 
-        System.out.println("Size of Index                    Time Taken to build                Number of Inverted Lists");
-        System.out.println("Uncompressed Index one = " + uncompSize1 + "  " + (endTimeIndex1 - startTimeIndex1) + " ms" + "\t" + indexListSize.get(0));
-        System.out.println("Uncompressed Index two = " + uncompSize2 + "  " + (endTimeIndex2 - startTimeIndex2)+ " ms" + "\t" + indexListSize.get(1));
-        System.out.println("Compressed Index one =   " + compSize1 + "  " + (endTimeIndex3 - startTimeIndex3) + " ms" + "\t" + indexListSize.get(0));
-        System.out.println("Compressed Index two =   " + compSize2 + "  " + (endTimeIndex4 - startTimeIndex4) + " ms" + "\t" + indexListSize.get(1));
+        System.out.println("Size of Index                  \t\tTime Taken\t\tNumber of Inverted Lists");
+        System.out.println("Uncompressed Index one = " + uncompSize1 + "\t\t" + (endTimeIndex1 - startTimeIndex1) + " ms" + "\t\t" + indexListSize.get(0));
+        System.out.println("Uncompressed Index two = " + uncompSize2 + "\t\t" + (endTimeIndex2 - startTimeIndex2)+ " ms" + "\t\t" + indexListSize.get(1));
+        System.out.println("Compressed Index one   = " + compSize1 + "\t\t" + (endTimeIndex3 - startTimeIndex3) + " ms" + "\t\t" + indexListSize.get(0));
+        System.out.println("Compressed Index two   = " + compSize2 + "\t\t" + (endTimeIndex4 - startTimeIndex4) + " ms" + "\t\t" + indexListSize.get(1));
 
 
         ArrayList<String> myWords = new ArrayList<String>();
@@ -118,7 +118,7 @@ public class Main {
         myWords.add("boundari");
         myWords.add("shock");
 
-        System.out.println("Term       DF       TF      Inverted List for Uncompressed (in bytes)");
+        System.out.println("Term\t\tDF\t\tTF\t\tInverted List for Uncompressed (in bytes)");
         System.out.println("=====================================================================");
         for(String current : myWords) {
             int termfreq = 0;
@@ -129,7 +129,7 @@ public class Main {
                 }
                 termfreq = termfreq + myStemmedDictionary.get(docId).get(current);
             }
-            System.out.println(current + "  " + docfreq + "  " + termfreq + "  " + 2 * stemmedTermFrequency.get(current).size()*(Integer.SIZE/Byte.SIZE));
+            System.out.println(current + "\t\t" + docfreq + "\t\t" + termfreq + "\t\t" + 2 * stemmedTermFrequency.get(current).size()*(Integer.SIZE/Byte.SIZE));
         }
     }
 
